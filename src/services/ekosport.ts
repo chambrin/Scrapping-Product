@@ -18,11 +18,14 @@ export const Ekosport = async () => {
             console.log(chalk.bold(`- ${product.name}`));
         });
 
-        // Launch the browser
+        // Launch the browser no headless
         const browser = await puppeteer.launch();
 
         // Counter for successful page loads
         let successfulLoads = 0;
+
+        // Total product count
+        let totalProductCount = 0;
 
         // Visit each product page
         for (const product of siteInfo) {
@@ -32,13 +35,21 @@ export const Ekosport = async () => {
                 process.stdout.write(`Loading page: ${product.url}... `);
                 await page.goto(product.url);
                 successfulLoads++;
+
+                // Wait for a second to allow products to load
+                await new Promise(resolve => setTimeout(resolve, 1000));
+
+                // Count the number of products on the page
+                const productCount = await page.$$eval('.product-tile-top', products => products.length);
+                console.log(chalk.italic(`Found ${productCount} products`));
+                totalProductCount += productCount;
+
                 // Clear the loading message
                 process.stdout.clearLine(0);
                 process.stdout.cursorTo(0);
             } catch (error) {
                 console.log(chalk.red(`Failed to load page: ${product.url}`))
             }
-
             //Page actions
             await page.close();
         }
@@ -48,6 +59,8 @@ export const Ekosport = async () => {
 
         // Log the number of successful page loads
         console.log(chalk.green(`${successfulLoads}/${siteInfo.length} pages loaded successfully for ${Website}`));
+        console.log(chalk.green(`Total product count for ${totalProductCount}`));
+
     } else {
         console.log(chalk.red("Site not found"))
     }
