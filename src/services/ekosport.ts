@@ -1,6 +1,7 @@
 import puppeteer from 'puppeteer';
 import chalk from "chalk";
 import {getSiteInfo} from "../utils/WebsiteSelector";
+import {ProductName} from "./actions/actions";
 
 // EkoSport service
 export const Ekosport = async () => {
@@ -27,6 +28,10 @@ export const Ekosport = async () => {
         // Total product count
         let totalProductCount = 0;
 
+        // Store the product counts
+        let productCounts: number[] = [];
+
+
         // Visit each product page
         for (const product of siteInfo) {
             const page = await browser.newPage();
@@ -44,9 +49,13 @@ export const Ekosport = async () => {
                 console.log(chalk.italic(`Found ${productCount} products`));
                 totalProductCount += productCount;
 
+                // Store the product count
+                productCounts.push(productCount);
+
                 // Clear the loading message
                 process.stdout.clearLine(0);
                 process.stdout.cursorTo(0);
+
             } catch (error) {
                 console.log(chalk.red(`Failed to load page: ${product.url}`))
             }
@@ -54,17 +63,23 @@ export const Ekosport = async () => {
             await page.close();
         }
 
+        // Loop over the product counts and call ProductName
+        for (const productCount of productCounts) {
+            ProductName();
+            // You can use productCount here
+        }
+
+
         // Close the browser
         await browser.close();
 
         // Log the number of successful page loads
-        console.log(chalk.green(`${successfulLoads}/${siteInfo.length} pages loaded successfully for ${Website}`));
-        console.log(chalk.green(`Total product count for ${totalProductCount}`));
+        console.log(chalk.blue(`${successfulLoads}/${siteInfo.length} pages loaded successfully for ${Website}`));
+        console.log(chalk.magenta(`Total product count for ${totalProductCount}`));
 
     } else {
         console.log(chalk.red("Site not found"))
     }
-
     // Return the site information
     return siteInfo;
 }

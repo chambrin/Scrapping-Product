@@ -4,20 +4,20 @@
       "name": "ekosport",
       "products": [
         {
-          "name": "Veste-randonnee",
-          "url": "https://www.ekosport.fr/c/eko-C2866-veste-randonnee"
+          "name": "jacket",
+          "url": "https://www.ekosport.co.uk/c/eko-C2770-running-jacket"
         },
         {
-          "name": "Chaussure-de-randonnee",
-          "url": "https://www.ekosport.fr/c/eko-C2857-chaussure-de-randonnee"
+          "name": "hiking-boot",
+          "url": "https://www.ekosport.co.uk/c/eko-C2857-hiking-boot"
         },
         {
-          "name": "Casque-velo",
-          "url": "https://www.ekosport.fr/c/eko-C2845-casque-velo"
+          "name": "helmet-inline-skating",
+          "url": "https://www.ekosport.co.uk/c/eko-C4065-helmet-inline-skating"
         },
         {
           "name": "Pack-ski",
-          "url": "https://www.ekosport.fr/c/eko-C2477-pack-ski"
+          "url": "https://www.ekosport.co.uk/c/eko-C2622-ski-touring-set"
         }
       ]
     },
