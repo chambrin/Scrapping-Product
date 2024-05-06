@@ -1,6 +1,5 @@
 import { Elysia } from "elysia";
 import chalk from "chalk";
-import {Ekosport} from "./services/ekosport";
 import {startServices} from "./bin/Starter";
 
 const backend = new Elysia().get("/", () => "Hello Elysia").listen(4000);
