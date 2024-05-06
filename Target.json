@@ -1,0 +1,30 @@
+{
+  "websites": [
+    {
+      "name": "ekosport",
+      "products": [
+        {
+          "name": "Veste-randonnee",
+          "url": "https://www.ekosport.fr/c/eko-C2866-veste-randonnee"
+        },
+        {
+          "name": "Chaussure-de-randonnee",
+          "url": "https://www.ekosport.fr/c/eko-C2857-chaussure-de-randonnee"
+        },
+        {
+          "name": "Casque-velo",
+          "url": "https://www.ekosport.fr/c/eko-C2845-casque-velo"
+        },
+        {
+          "name": "Pack-ski",
+          "url": "https://www.ekosport.fr/c/eko-C2477-pack-ski"
+        }
+      ]
+    },
+    {
+      "name": "autreSite",
+      "products": [
+      ]
+    }
+  ]
+}
