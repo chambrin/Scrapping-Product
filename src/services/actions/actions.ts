@@ -1,15 +1,17 @@
 import puppeteer from 'puppeteer';
+import chalk from "chalk";
+import { Product } from '../../../types/product.type';
 
-export async function ScrappingData(browser: puppeteer.Browser, product: { name: string, url: string }) {
+export async function ScrappingData(browser: puppeteer.Browser, shop: { name: string, url: string }) {
     const page = await browser.newPage();
-    let productData: any = null;
+    let productData: Product[] = []; // Initialize productData as an empty array
 
     try {
         // Go to the product page
-        await page.goto(product.url);
+        await page.goto(shop.url, { waitUntil: 'networkidle2', timeout: 30000 });
 
         // Log the visited product page URL
-        console.log('Visited product page: ' + product.url);
+        console.log(chalk.cyan('Visited shop page: ' + shop.url));
 
         // Wait for a second to allow products to load
         await new Promise(resolve => setTimeout(resolve, 2000));
@@ -29,14 +31,38 @@ export async function ScrappingData(browser: puppeteer.Browser, product: { name:
             productUrls.push(productUrl);
         }
 
-        // Log the product URLs
-        console.log('Product URLs: ', productUrls);
+// Visit each product URL and get the product details
+        for (const productUrl of productUrls) {
+            if (productUrl) { // Check if productUrl is not undefined
+                try {
+                    // Go to the product page
+                    await page.goto(productUrl, { waitUntil: 'networkidle2', timeout: 30000 });
 
-        // Return the product URLs
-        productData = productUrls;
+                    // Add a delay to allow the page to load completely
+                    await new Promise(resolve => setTimeout(resolve, 2000)); // wait for 2 seconds
 
+                    // Scrape the product details
+                    const product: Product = await page.evaluate(() => {
+                        const name = document.querySelector('ish-product-name span[itemprop="name"]')?.textContent || '';
+                        const price = parseFloat(document.querySelector('meta[itemprop="price"]')?.getAttribute('content') || '0');
+                        const description = Array.from(document.querySelectorAll('div.ng-star-inserted p')).map(p => p.textContent).join(' ') || '';
+                        const imageUrl = document.querySelector('img[itemprop="image"]')?.getAttribute('src') || '';
+
+                        return { name, url: window.location.href, price, description, imageUrl };
+                    });
+
+                    // Add the product to the productData array
+                    productData.push(product);
+
+                } catch (error) {
+                    console.log(`Failed to load page: ${productUrl}`)
+                }
+            } else {
+                console.log('Product URL is undefined ')
+            }
+        }
     } catch (error) {
-        console.log(`Failed to load page: ${product.url}`)
+        console.log(`Failed to load page: ${shop.url}`)
     }
 
     //Page actions

@@ -21,7 +21,7 @@ export const Ekosport = async () => {
         });
 
         // Launch the browser no headless
-        const browser = await puppeteer.launch();
+        const browser = await puppeteer.launch({ headless: true }); // default is true
 
         // Counter for successful page loads
         let successfulLoads = 0;
@@ -72,7 +72,6 @@ export const Ekosport = async () => {
 
         // Loop over the products and call ScrappingData
         for (const product of siteInfo) {
-            console.log('Processing product: ' + product.name);
 
             // Scrape the product data
             const productData = await ScrappingData(browser, product);
