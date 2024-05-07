@@ -1,7 +1,8 @@
 import puppeteer from 'puppeteer';
 import chalk from "chalk";
 import {getSiteInfo} from "../utils/WebsiteSelector";
-import {ProductName} from "./actions/actions";
+import { ScrappingData} from "./actions/actions";
+import ProgressBar from 'progress';
 
 // EkoSport service
 export const Ekosport = async () => {
@@ -31,8 +32,7 @@ export const Ekosport = async () => {
         // Store the product counts
         let productCounts: number[] = [];
 
-
-        // Visit each product page
+        // Visit each shop page
         for (const product of siteInfo) {
             const page = await browser.newPage();
             try {
@@ -63,19 +63,24 @@ export const Ekosport = async () => {
             await page.close();
         }
 
-        // Loop over the product counts and call ProductName
-        for (const productCount of productCounts) {
-            ProductName();
-            // You can use productCount here
-        }
-
-
-        // Close the browser
-        await browser.close();
-
         // Log the number of successful page loads
         console.log(chalk.blue(`${successfulLoads}/${siteInfo.length} pages loaded successfully for ${Website}`));
         console.log(chalk.magenta(`Total product count for ${totalProductCount}`));
+
+        // Create a new progress bar instance with totalProductCount
+        const bar = new ProgressBar(':bar', { total: totalProductCount });
+
+        // Loop over the products and call ScrappingData
+        for (const product of siteInfo) {
+            console.log('Processing product: ' + product.name);
+
+            // Scrape the product data
+            const productData = await ScrappingData(browser, product);
+            console.log(productData);
+        }
+
+        // Close the browser
+        await browser.close();
 
     } else {
         console.log(chalk.red("Site not found"))
