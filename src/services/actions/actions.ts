@@ -4,10 +4,6 @@ import { Product } from '../../../types/product.type';
 import {ProgressBarManager} from "../../bin/ProgressBarManager";
 
 
-// progress bar
-const progressBarManager = new ProgressBarManager();
-
-
 export async function ScrappingData(browser: puppeteer.Browser, shop: { name: string, url: string }, progressBarManager: ProgressBarManager) {
     const page = await browser.newPage();
     let productData: Product[] = []; // Initialize productData as an empty array

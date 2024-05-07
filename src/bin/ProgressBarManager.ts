@@ -1,10 +1,12 @@
+// src/bin/ProgressBarManager.ts
 import ProgressBar from 'progress';
+import chalk from 'chalk';
 
 export class ProgressBarManager {
     private bar: ProgressBar | null = null;
 
     createBar(total: number) {
-        this.bar = new ProgressBar(':bar', { total });
+        this.bar = new ProgressBar(chalk.green(':bar') + ' :current/:total', { total });
     }
 
     updateBar(increment: number) {
