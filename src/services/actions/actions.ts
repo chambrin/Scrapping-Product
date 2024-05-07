@@ -1,8 +1,14 @@
 import puppeteer from 'puppeteer';
 import chalk from "chalk";
 import { Product } from '../../../types/product.type';
+import {ProgressBarManager} from "../../bin/ProgressBarManager";
 
-export async function ScrappingData(browser: puppeteer.Browser, shop: { name: string, url: string }) {
+
+// progress bar
+const progressBarManager = new ProgressBarManager();
+
+
+export async function ScrappingData(browser: puppeteer.Browser, shop: { name: string, url: string }, progressBarManager: ProgressBarManager) {
     const page = await browser.newPage();
     let productData: Product[] = []; // Initialize productData as an empty array
 
@@ -36,10 +42,10 @@ export async function ScrappingData(browser: puppeteer.Browser, shop: { name: st
             if (productUrl) { // Check if productUrl is not undefined
                 try {
                     // Go to the product page
-                    await page.goto(productUrl, { waitUntil: 'networkidle2', timeout: 30000 });
+                    await page.goto(productUrl, { waitUntil: 'networkidle2', timeout: 10000 });
 
                     // Add a delay to allow the page to load completely
-                    await new Promise(resolve => setTimeout(resolve, 2000)); // wait for 2 seconds
+                    await new Promise(resolve => setTimeout(resolve, 1000)); // wait for 2 seconds
 
                     // Scrape the product details
                     const product: Product = await page.evaluate(() => {
@@ -53,6 +59,8 @@ export async function ScrappingData(browser: puppeteer.Browser, shop: { name: st
 
                     // Add the product to the productData array
                     productData.push(product);
+
+                    progressBarManager.updateBar(1);
 
                 } catch (error) {
                     console.log(`Failed to load page: ${productUrl}`)

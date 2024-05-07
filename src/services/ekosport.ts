@@ -3,6 +3,7 @@ import chalk from "chalk";
 import {getSiteInfo} from "../utils/WebsiteSelector";
 import { ScrappingData} from "./actions/actions";
 import ProgressBar from 'progress';
+import {ProgressBarManager} from "../bin/ProgressBarManager";
 
 // EkoSport service
 export const Ekosport = async () => {
@@ -12,6 +13,11 @@ export const Ekosport = async () => {
 
     // Get the site information
     const siteInfo = getSiteInfo(Website);
+
+
+
+    // Create a new instance of ProgressBarManager
+    const progressBarManager = new ProgressBarManager();
 
     // Check if siteInfo is not undefined
     if (siteInfo) {
@@ -52,6 +58,7 @@ export const Ekosport = async () => {
                 // Store the product count
                 productCounts.push(productCount);
 
+
                 // Clear the loading message
                 process.stdout.clearLine(0);
                 process.stdout.cursorTo(0);
@@ -68,13 +75,12 @@ export const Ekosport = async () => {
         console.log(chalk.magenta(`Total product count for ${totalProductCount}`));
 
         // Create a new progress bar instance with totalProductCount
-        const bar = new ProgressBar(':bar', { total: totalProductCount });
+        progressBarManager.createBar(totalProductCount);
 
         // Loop over the products and call ScrappingData
         for (const product of siteInfo) {
-
             // Scrape the product data
-            const productData = await ScrappingData(browser, product);
+            const productData = await ScrappingData(browser, product, progressBarManager);
             console.log(productData);
         }
 
