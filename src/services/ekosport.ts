@@ -2,8 +2,8 @@ import puppeteer from 'puppeteer';
 import chalk from "chalk";
 import {getSiteInfo} from "../utils/WebsiteSelector";
 import { ScrappingData} from "./actions/actions";
-import ProgressBar from 'progress';
 import {ProgressBarManager} from "../bin/ProgressBarManager";
+import {saveAllData, saveData} from "../utils/DataManagers";
 
 // EkoSport service
 export const Ekosport = async () => {
@@ -11,10 +11,14 @@ export const Ekosport = async () => {
 
     const Website = "ekosport";
 
+    // Initialize allProductData as an empty array
+    let allProductData: any[] = [];
+
+    // Initialize a map to store product data by category
+    let productDataByCategory: { [key: string]: any[] } = {};
+
     // Get the site information
     const siteInfo = getSiteInfo(Website);
-
-
 
     // Create a new instance of ProgressBarManager
     const progressBarManager = new ProgressBarManager();
@@ -82,7 +86,24 @@ export const Ekosport = async () => {
             // Scrape the product data
             const productData = await ScrappingData(browser, product, progressBarManager);
             console.log(productData);
+
+            // Add the product data to the corresponding category in productDataByCategory
+            if (!productDataByCategory[product.name]) {
+                productDataByCategory[product.name] = [];
+            }
+            productDataByCategory[product.name] = productDataByCategory[product.name].concat(productData);
+
+            // Add the product data to allProductData
+            allProductData = allProductData.concat(productData);
         }
+
+        // Save the product data to a JSON file for each category
+        for (const category in productDataByCategory) {
+            saveData(productDataByCategory[category], 'ekosport', category);
+        }
+
+        // Save all the product data to a JSON file
+        saveAllData(allProductData, 'ekosport');
 
         // Close the browser
         await browser.close();

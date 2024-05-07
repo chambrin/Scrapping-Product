@@ -10,13 +10,13 @@ export async function ScrappingData(browser: puppeteer.Browser, shop: { name: st
 
     try {
         // Go to the product page
-        await page.goto(shop.url, { waitUntil: 'networkidle2', timeout: 30000 });
+        await page.goto(shop.url, { waitUntil: 'networkidle2', timeout: 10000 });
 
         // Log the visited product page URL
         console.log(chalk.cyan('Visited shop page: ' + shop.url));
 
         // Wait for a second to allow products to load
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        await new Promise(resolve => setTimeout(resolve, 1000));
 
         // Get all the product elements
         const productElements = await page.$$('.product-tile-top a');
@@ -33,7 +33,7 @@ export async function ScrappingData(browser: puppeteer.Browser, shop: { name: st
             productUrls.push(productUrl);
         }
 
-// Visit each product URL and get the product details
+        // Visit each product URL and get the product details
         for (const productUrl of productUrls) {
             if (productUrl) { // Check if productUrl is not undefined
                 try {

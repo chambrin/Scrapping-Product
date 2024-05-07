@@ -6,7 +6,7 @@ export class ProgressBarManager {
     private bar: ProgressBar | null = null;
 
     createBar(total: number) {
-        this.bar = new ProgressBar(chalk.green(':bar') + ' :current/:total', { total });
+        this.bar = new ProgressBar(chalk.green(':bar') + ' :current/:total', { total, width: 30});
     }
 
     updateBar(increment: number) {
